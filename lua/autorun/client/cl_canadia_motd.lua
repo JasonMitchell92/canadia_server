@@ -3,27 +3,35 @@ local settings = {
 		pos = Vector(1200, 7776, -312),
 		ang = Angle(0,45,90),
 		dir = Vector(1,-1,0),
-		size = Vector(128,96) },
+		size = Vector(128,96),
+		scale = 0.25,
+		dist = 1000,
+	},
     ["gm_bluehills_test3"] = {
 		pos = Vector(1154, -672, 340),
 		ang = Angle(0,270,90),
 		dir = Vector(-1,0,0),
-		size = Vector(224,86)},
+		size = Vector(224,86),
+		scale = 0.25,
+		dist = 1000,
+	},
+	["gm_carcon_ext"] = {
+		pos = Vector(0, -3070,-14386),
+		ang = Angle(0,180,90),
+		dir = Vector(0,1,0),
+		size = Vector(350, 180),
+		scale = 0.5,
+		dist = 1000,
+	}
 }
-
 if settings[ game.GetMap() ] == nil then return end
 
 local setting = settings[ game.GetMap() ]
 
 
-local motdScreenSize  = setting.size
-local motdScreenScale = 0.25
-local margin = 8 / motdScreenScale
-local renderDist = 1000
-
-
-motdScreenSize = motdScreenSize / motdScreenScale
-renderDist = renderDist * renderDist
+local margin = 16 / setting.scale
+setting.size  = setting.size / setting.scale
+setting.dist = setting.dist * setting.dist
 
 hook.Add("PostDrawTranslucentRenderables", "Canadia_WorkshopLink", function()
 	local viewingDiff  = setting.pos - EyePos()
@@ -31,23 +39,15 @@ hook.Add("PostDrawTranslucentRenderables", "Canadia_WorkshopLink", function()
 
 	if viewingAngle > 0 then return end
 
+    cam.Start3D2D( setting.pos, setting.ang, setting.scale)
 
+	x = -setting.size.x/2
+	y = -setting.size.y/2
 
-	
-	
+    draw.RoundedBoxEx(margin, x, y, setting.size.x, margin*2, Color(209, 70, 70), true, true, false, false)
+    draw.RoundedBoxEx(margin, x, y + margin*2, setting.size.x, setting.size.y - margin*2, Color(215,215,215), false, false, true, true)
 
-    //if EyePos().y < setting.pos.y then return end
-	if viewingAngle > 90 then return end
-
-    cam.Start3D2D( setting.pos, setting.ang, motdScreenScale)
-
-	x = -motdScreenSize.x/2
-	y = -motdScreenSize.y/2
-
-    draw.RoundedBoxEx(margin, x, y, motdScreenSize.x, margin*2, Color(209, 70, 70), true, true, false, false)
-    draw.RoundedBoxEx(margin, x, y + margin*2, motdScreenSize.x, motdScreenSize.y - margin*2, Color(215,215,215), false, false, true, true)
-
-    if EyePos():DistToSqr(setting.pos) > renderDist then
+    if EyePos():DistToSqr(setting.pos) > setting.dist then
         cam.End3D2D()
         return 
     end
@@ -66,7 +66,7 @@ hook.Add("PostDrawTranslucentRenderables", "Canadia_WorkshopLink", function()
 	draw.DrawText("Seeing errors? Use the button below", "WeatherSM", x, y, Color(90,90,90))
 
 	
-	local buttonWidth = motdScreenSize.x * 0.6
+	local buttonWidth = setting.size.x * 0.6
 	x = - buttonWidth/2
 	y = y + margin*1.25
 
@@ -76,7 +76,7 @@ hook.Add("PostDrawTranslucentRenderables", "Canadia_WorkshopLink", function()
 
 	if aimPos ~= nil then
 		local localPos = aimPos - setting.pos
-		local cursorPos = Vector(-localPos.y, -localPos.z) / motdScreenScale
+		local cursorPos = Vector(-localPos.y, -localPos.z) / setting.scale
 		
 		//surface.DrawCircle(cursorPos.x, cursorPos.y, 15, 0, 0, 0, 255)
 
@@ -95,3 +95,6 @@ hook.Add("PostDrawTranslucentRenderables", "Canadia_WorkshopLink", function()
     
     cam.End3D2D()
 end)
+
+
+print("[Canadia] Loaded MOTD Screen")
