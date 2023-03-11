@@ -2,31 +2,40 @@ local settings = {
     ["gm_novenka"] = {
         pos = Vector(1314, 7890, -312),
         ang = Angle(0, 45, 90),
-        dir = Vector(1,-1,0)},
+        dir = Vector(1,-1,0),
+        size = Vector(160, 96),
+        dist = 1500,
+        scale = 0.25,
+    },
     ["gm_bluehills_test3"] = {
         pos = Vector(800, -1108, 348),
         ang = Angle(0,90,90),
-        dir = Vector(1,0,0)},
+        dir = Vector(1,0,0),
+        size = Vector(160, 96),
+        dist = 1500,
+        scale = 0.25,
+    },
+    ["gm_carcon_ext"] = {
+        pos = Vector(180, -2280, -14505),
+        ang = Angle(0,270,90),
+        dir = Vector(-1,0,0),
+        size = Vector(160, 96),
+        dist = 500,
+        scale = 0.25,
+    },
 }
 
 if settings[ game.GetMap() ] == nil then return end
 
 local setting = settings[ game.GetMap() ]
 
+setting.size = setting.size / setting.scale
+setting.dist = setting.dist * setting.dist
 
-local weatherScreenSize  = Vector(160, 96)
-local weatherScreenScale = 0.25
-
-local renderDistance  = 1500
-local refreshRate = 15 * 60 -- 15 minutes
-
-weatherScreenSize = weatherScreenSize / weatherScreenScale
-renderDistance = renderDistance * renderDistance
-
-surface.CreateFont( "WeatherLG", { font = "Roboto", size = 16 / weatherScreenScale} )
-surface.CreateFont( "WeatherMD", { font = "Roboto", size = 10 / weatherScreenScale} )
-surface.CreateFont( "WeatherSM", { font = "Roboto", size =  7 / weatherScreenScale} )
-surface.CreateFont( "WeatherXS", { font = "Roboto", size =  4 / weatherScreenScale} )
+surface.CreateFont( "WeatherLG", { font = "Roboto", size = 16 / setting.scale} )
+surface.CreateFont( "WeatherMD", { font = "Roboto", size = 10 / setting.scale} )
+surface.CreateFont( "WeatherSM", { font = "Roboto", size =  7 / setting.scale} )
+surface.CreateFont( "WeatherXS", { font = "Roboto", size =  4 / setting.scale} )
 
 
 local weatherMats = {
@@ -75,8 +84,8 @@ timer.Create("Canadia_GetWeather", 1, 0, function()
     end
 end)
 
-local margin = 8 / weatherScreenScale
-local gridX = weatherScreenSize.x / 7
+local margin = 8 / setting.scale
+local gridX = setting.size.x / 7
 
 hook.Add( "PostDrawTranslucentRenderables", "Canadia_Weather_Screen", function()
 	local viewingDiff  = setting.pos - EyePos()
@@ -86,17 +95,17 @@ hook.Add( "PostDrawTranslucentRenderables", "Canadia_Weather_Screen", function()
 
     //if EyePos().y < setting.pos.y then return end
 
-    cam.Start3D2D( setting.pos, setting.ang, weatherScreenScale)
+    cam.Start3D2D( setting.pos, setting.ang, setting.scale)
 
     --start at the top left
-    x = -weatherScreenSize.x / 2
-    y = -weatherScreenSize.y / 2
+    x = -setting.size.x / 2
+    y = -setting.size.y / 2
 
 
-    draw.RoundedBoxEx(margin, x, y, weatherScreenSize.x, margin*2, Color(88,176,98,220), true, true, false, false)
-    draw.RoundedBoxEx(margin, x, y + margin*2, weatherScreenSize.x, weatherScreenSize.y - margin*2, Color(97,130,176,220), false, false, true, true)
+    draw.RoundedBoxEx(margin, x, y, setting.size.x, margin*2, Color(88,176,98,220), true, true, false, false)
+    draw.RoundedBoxEx(margin, x, y + margin*2, setting.size.x, setting.size.y - margin*2, Color(97,130,176,220), false, false, true, true)
     
-    if EyePos():DistToSqr(setting.pos) > renderDistance then
+    if EyePos():DistToSqr(setting.pos) > setting.dist then
         draw.SimpleText("Come Closer...", "WeatherLG", 0, 0, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
         cam.End3D2D()
         return
@@ -113,17 +122,17 @@ hook.Add( "PostDrawTranslucentRenderables", "Canadia_Weather_Screen", function()
     y = y + margin * 2
     surface.SetMaterial( weatherMats[ weatherData.icon ] )
     surface.SetDrawColor(Color(255,255,255))
-    surface.DrawTexturedRect(-36/weatherScreenScale, y, 36/weatherScreenScale, 36/weatherScreenScale)
+    surface.DrawTexturedRect(-36/setting.scale, y, 36/setting.scale, 36/setting.scale)
 
-    y = y + 22 / weatherScreenScale
-    x = 0//x + 96 / weatherScreenScale + margin*2
+    y = y + 22 / setting.scale
+    x = 0//x + 96 / setting.scale + margin*2
     draw.SimpleText(weatherData.temperature, "WeatherLG", x, y, Color(255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_BOTTOM)
     draw.SimpleText(weatherData.description, "WeatherSM", x, y, Color(255,255,255), TEXT_ALIGN_LEFT, TEXT_ALIGN_TOP)
 
 
     surface.SetDrawColor(Color(255,255,255))
-    y = weatherScreenSize.y / 2 - 36 / weatherScreenScale
-    x = -weatherScreenSize.x / 2 - gridX/2
+    y = setting.size.y / 2 - 36 / setting.scale
+    x = -setting.size.x / 2 - gridX/2
     for i, datum in ipairs( weatherData.forecast ) do
         x = x + gridX
         draw.SimpleText(datum.time, "WeatherSM", x, y, Color(255,255,255), TEXT_ALIGN_CENTER, TEXT_ALIGN_CENTER)
@@ -140,8 +149,8 @@ hook.Add( "PostDrawTranslucentRenderables", "Canadia_Weather_Screen", function()
     end
     
 
-    draw.DrawText("Weather data is based on IP geolocation, which may vary from your actual location.", "DermaDefault", -weatherScreenSize.x/2 + margin, weatherScreenSize.y/2 - 16, Color(255,255,255), TEXT_ALIGN_LEFT)
-    draw.DrawText(weatherData.timestamp, "DermaDefault", weatherScreenSize.x/2 - margin, weatherScreenSize.y/2 - 16, Color(255,255,255), TEXT_ALIGN_RIGHT)
+    draw.DrawText("Weather data is based on IP geolocation, which may vary from your actual location.", "DermaDefault", -setting.size.x/2 + margin, setting.size.y/2 - 16, Color(255,255,255), TEXT_ALIGN_LEFT)
+    draw.DrawText(weatherData.timestamp, "DermaDefault", setting.size.x/2 - margin, setting.size.y/2 - 16, Color(255,255,255), TEXT_ALIGN_RIGHT)
     cam.End3D2D()
 end)
 
