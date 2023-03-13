@@ -1,6 +1,8 @@
 local settings = {
     ["gm_novenka"] = {pos = Vector(2368, 6400, -152), size = 66},
-    ["gm_bluehills_test3"] = {pos = Vector(168, -224, 300), size = 128},
+    ["gm_bluehills_test3"] = {pos = Vector(168, -224, 350), size = 128},
+    ["gm_flatgrass_classic"] = {pos = Vector(1034, 815, 164), size = 128},
+    ["gm_carcon_ext"] = {pos = Vector(9, -2368, -13850), size = 128},
 }
 
 if settings[ game.GetMap() ] == nil then return end
@@ -14,17 +16,27 @@ local modelRadius = 20.25 / 2
 
 if SERVER then
     util.AddNetworkString("Canadia_GlobePlayerDataRequest")
-    
-    hook.Add("InitPostEntity", "Canadia_GlobeInitPostEntity", function()
+    earthEnt = earthEnt or nil
+
+    function createEarth()
+        if IsValid(earthEnt) then return end
+
         earthEnt = ents.Create("prop_physics")
-        earthEnt:SetPos( setting.pos )
         earthEnt:SetModel("models/earth/earth.mdl")
         earthEnt:SetMaterial("")
+        earthEnt:SetPos( setting.pos )
         earthEnt:SetBodygroup(1, 1)
         earthEnt:SetModelScale( globeRadius / modelRadius )
+    end
+
+    
+    hook.Add("InitPostEntity", "Canadia_GlobeInitPostEntity", function()
+        createEarth()
     end)
 
     hook.Add("Think", "Canadia_GlobeThink", function()
+        if earthEnt==nil then createEarth() end
+
         earthEnt:SetAngles(Angle(0, CurTime()%360, 0))
     end)
 end
