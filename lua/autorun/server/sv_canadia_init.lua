@@ -40,6 +40,12 @@ local settings = {
             min = Vector(-7856, 11216, 112),
             max = Vector(-7312, 11568, 251),
         }
+    },
+    ["gm_carcon_ext"] = {
+        jail = {
+            min = Vector(-3360, 4096,-14584),
+            max = Vector(-2784, 5212,-14296),
+        }
     }
 }
 
