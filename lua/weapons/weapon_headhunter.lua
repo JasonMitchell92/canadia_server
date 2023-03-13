@@ -71,6 +71,13 @@ function SWEP:GetAimTrace()
 	})
 end
 
+function SWEP:PlayHeadShot()
+	local effectdata = EffectData()
+	effectdata:SetOrigin( trace.HitPos )
+	effectdata:SetAttachment( trace.PhysicsBone )
+	util.Effect( "balloon_pop", effectdata, false, true )
+end
+
 function SWEP:PrimaryAttack()
 	-- Make sure we can shoot first
 	if self.IsReloading or !self:CanPrimaryAttack() then return end
@@ -92,14 +99,7 @@ function SWEP:PrimaryAttack()
 	local trace = self:GetAimTrace()
 
 	if trace.PhysicsBone == 10 then --headshot
-		
-		local effectdata = EffectData()
-		effectdata:SetOrigin( trace.HitPos )
-		effectdata:SetNormal( trace.HitNormal )
-		effectdata:SetEntity( trace.Entity )
-		effectdata:SetMagnitude( 100 )
-		effectdata:SetAttachment( trace.PhysicsBone )
-		util.Effect( "balloon_pop", effectdata )
+		self:PlayHeadShot()
 	end
 	
 	self.Weapon:SetNextPrimaryFire( CurTime() + self.Primary.Delay )
