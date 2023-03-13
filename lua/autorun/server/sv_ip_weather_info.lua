@@ -129,8 +129,6 @@ local function obtainWeatherData(ply)
         valid    = false,
     }
 
-    print(url)
-
     http.Fetch(url, function(body, size, headers, code)
         
         json = util.JSONToTable(body)
