@@ -35,7 +35,7 @@ function setup3D2DText(pos, scale, renderDist)
         outline = false,
     })
 
-    local leaf = Material("canadia/maple_leaf.png")
+    local leaf = Material("canadia/maple_leaf_white.png")
     
     leafClr = Color(209, 70, 70)
 
