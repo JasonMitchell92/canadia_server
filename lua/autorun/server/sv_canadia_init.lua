@@ -1,9 +1,65 @@
-resource.AddFile("materials/canadia/maple_leaf.png")
+resource.AddFile("materials/canadia/maple_leaf_white.png")
 resource.AddFile("materials/canadia/circle_outline.png")
 
 resource.AddFile("materials/weapons/headhunter.jpg")
 resource.AddFile("materials/weapons/enforcer.jpg")
---resource.AddFile("materials/weapons/warmonger.jpg")
+
+
+--Workshop Client Requirements
+resource.AddWorkshop("2512558788") --[ACE] - Armored Combat Ext  1261 MB
+resource.AddWorkshop("1131455085") --Gredwitch' Base             727 MB
+resource.AddWorkshop("2912826012") --[LVS] - Planes              282 MB
+resource.AddWorkshop("173482196")  --SProps Workshop Edition     160 MB
+resource.AddWorkshop("771487490")  --[simfphys] - Classic        139 MB
+resource.AddWorkshop("2891252709") --ACF Unofficial Extras       139 MB
+resource.AddWorkshop("2912816023") --[LVS] - Framework           15 MB
+resource.AddWorkshop("2922255746") --[LVS] - Helicopters         13 MB
+resource.AddWorkshop("2891252709") --half-life 2 props extended  10 MB
+resource.AddWorkshop("545874448")  --earth and moon models       5 MB
+resource.AddWorkshop("2893718679") --crazy coupe simfphys        2 MB
+
+resource.AddWorkshop("826673827")  --TDM/LW Car Pack             14 MB
+resource.AddWorkshop("112606459")  --TDMCars - Base Pack         29 MB
+resource.AddWorkshop("113118541")  --TDMCars - BMW               48 MB
+resource.AddWorkshop("120766823")  --TDMCars - GMC               11 MB
+resource.AddWorkshop("494665724")  --TDMCars - Lexus             6 MB
+resource.AddWorkshop("266504181")  --TDMCars - Subaru            12 MB
+resource.AddWorkshop("286998866")  --TDMCars - Volvo             20 MB
+resource.AddWorkshop("123455885")  --TDMCars - Nissan            24 MB
+resource.AddWorkshop("266579667")  --[LW] Shared Textures        75 MB
+resource.AddWorkshop("497652801")  --[LW] GMC Pack               23 MB
+resource.AddWorkshop("307458805")  --[LW] Ford SVT Cobra R       15 MB
+resource.AddWorkshop("218584660")  --[LW] Subaru Impreza 22B     17 MB
+resource.AddWorkshop("218869210")  --SGM Shared Textures         18 MB
+resource.AddWorkshop("490329940")  --2002 Dodge Neon SE          6 MB
+resource.AddWorkshop("739636780")  --Roy's Cars - Shared FIles   139 MB
+resource.AddWorkshop("2495777274") --Nissan Skyline GT-R R34     6 MB
+
+resource.AddWorkshop("700820606")  --Biggies Bong                1 MB
+resource.AddWorkshop("245762582")  --dice models                 < 1 MB
+resource.AddWorkshop("471435979")  --Race Seats                  < 1 MB
+
+
+
+
+--require the map
+local function RequireMapFromWorkshop(name)
+    local workshopIDs = {
+        ["gm_novenka"]         = "2049617805", --133 MB
+        ["gm_carcon_ext"]      = "2290839694", --185 MB
+        ["gm_bluehills_test3"] = "243902601", --25 MB
+    }
+    
+    if workshopIDs[ name ] then
+        resource.AddWorkshop( workshopIDs[ name ] )
+    else
+        print("[Canadia] No Workshop file specified for map "..name)
+    end
+end
+
+RequireMapFromWorkshop( game.GetMap() )
+
+
 
 
 Canadia = {}
