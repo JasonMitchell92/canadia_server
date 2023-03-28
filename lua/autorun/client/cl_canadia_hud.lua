@@ -120,6 +120,7 @@ local function DrawPlayerAvatar( x, y )
     print("Player Avatar finished")
 end
 
+
 local HudPaintUsed = false
 
 hook.Add("HUDPaintBackground", "CanadiaHUD_Render", function()
@@ -129,6 +130,11 @@ hook.Add("HUDPaintBackground", "CanadiaHUD_Render", function()
     end
     
     HudPaintUsed = true
+    local money = 0
+
+    if ply.money then
+        money = prettyMoneyString(ply.money)
+    end
 
     local scrMargin = 20
     
@@ -163,7 +169,6 @@ hook.Add("HUDPaintBackground", "CanadiaHUD_Render", function()
     drawImage(x, y, rowHeight, rowHeight, ICONS.money, COLORS.white)
     
     x = x + rowHeight + boxMargin
-    local money = prettyMoneyString(util.JSONToTable( ply:GetNW2String(BitNet.NetVar.ClientTable)).money or 0)
     draw.SimpleText( "$" .. money, "CanadiaHUD_Main", x, y + rowHeight*0.5, COLORS.green, TEXT_ALIGN_LEFT, TEXT_ALIGN_CENTER)
 
 
